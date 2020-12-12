@@ -25,7 +25,9 @@ class Article {
       title: json['title']['rendered'],
       excerpt: json['excerpt']['rendered'],
       author: json['_embedded']['author'][0]['name'],
-      imageUrl: json['_embedded']['wp:featuredmedia'][0]['link'],
+      imageUrl: json['_embedded']['wp:featuredmedia'] == null
+          ? null
+          : json['_embedded']['wp:featuredmedia'][0]['link'],
     );
   }
 }

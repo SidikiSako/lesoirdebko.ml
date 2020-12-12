@@ -1,6 +1,7 @@
 # lesoirdebko
 
-A new Flutter project.
+Application Flutter pour le journal le soir de bamako.
+L'application utilise l'API Wordpress pour récuperer les articles depuis le site web du journal.
 
 ## Getting Started
 

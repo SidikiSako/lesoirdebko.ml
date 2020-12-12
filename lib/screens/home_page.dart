@@ -4,10 +4,13 @@ import 'package:flutter_html/style.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lesoirdebko/models/article.dart';
 import 'package:lesoirdebko/provider/article_provider.dart';
+import 'package:lesoirdebko/utils/constant.dart';
 import 'package:lesoirdebko/utils/reformat_title.dart';
+import 'package:lesoirdebko/widget/category_widget.dart';
 import 'package:lesoirdebko/widget/grid_article.dart';
 import 'package:lesoirdebko/widget/main_article.dart';
 import 'package:lesoirdebko/widget/most_recent_articles.dart';
+import 'package:lesoirdebko/widget/subscribe.dart';
 import 'package:provider/provider.dart';
 
 //http://lesoirdebko.ml/wp-json//wp/v2/posts?_embed&_fields=id,modified_gmt,excerpt,title,content,_links
@@ -26,7 +29,10 @@ class _HomePageState extends State<HomePage> {
 
   void getArticles() async {
     var articleProvider = Provider.of<ArticleProvider>(context, listen: false);
+    //fetch les premiers articles de chaque categorie
     await articleProvider.fetchLastArticles();
+    await articleProvider.fetchCategoryArticles(kActualitesRegionaleCategory);
+    await articleProvider.fetchCategoryArticles(kActualitesNationnaleCategory);
     setState(() {
       isLoading = false;
     });
@@ -36,7 +42,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var articleProvider = Provider.of<ArticleProvider>(context);
     List<Article> articles = articleProvider.articleList;
-
+    // List<Article> actualiteRegionalesList =
+    //     articleProvider.actualitesRegionalesList;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -57,23 +64,30 @@ class _HomePageState extends State<HomePage> {
               children: [
                 MainArticle(article: articleProvider.articleList.first),
                 SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
+                Container(
+                  width: double.infinity,
+                  color: Color(0xFF5751E3),
+                  margin: const EdgeInsets.only(left: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Text(
                     'Dernières nouvelles',
-                    style: GoogleFonts.poppins(
-                        fontSize: 25, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontSize: 18,
+                      //fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 15),
                   //height: 800,
-                  height: 190,
+                  height: 170,
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -93,87 +107,16 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   height: 20,
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Text(
-                    'Votre journal est maintenant disponible en version numérique et imprimé !',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                SubscribeWidget(),
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15),
-                  height: 270,
-                  color: Colors.green,
+                CategoryWidget(
+                  category: kActualitesRegionaleCategory,
                 ),
-                SizedBox(
-                  height: 20,
+                CategoryWidget(
+                  category: kActualitesNationnaleCategory,
                 ),
-                Container(
-                  height: 300,
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: 150,
-                        color: Color(0xFF0A6CBA),
-                      ),
-                      Positioned(
-                        top: 10,
-                        left: 15,
-                        child: Text(
-                          'ACTUALITÉS REGIONALES',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 22,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 50,
-                        left: 15,
-                        child: Container(
-                          height: 230,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 10,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 160,
-                                        width: 152,
-                                        color: Colors.purple,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        width: 152,
-                                        child: Text(
-                                          'Titre de mon article : flutter , le nouveau framework à la mode',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }),
-                        ),
-                      )
-                    ],
-                  ),
-                )
               ],
             ),
     );

@@ -16,7 +16,7 @@ class ArticlePublishDate extends StatelessWidget {
         SizedBox(width: 5),
         Text(
           'Publié le ${reformatDate(date)}',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.montserrat(
             fontSize: 12,
             fontWeight: FontWeight.w500,
             color: Color(0xFF575757),
